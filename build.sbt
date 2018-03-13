@@ -6,16 +6,18 @@ organization := "com.databricks"
 
 name := "sbt-databricks"
 
-version := "0.1.6-SNAPSHOT"
+version := "0.1.7-SNAPSHOT"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.10.7"
+
+val httpCompsV = "4.5.5"
 
 libraryDependencies ++= Seq(
-    "org.apache.httpcomponents" % "httpclient" % "4.3.3",
-    "org.apache.httpcomponents" % "httpmime" % "4.3.3",
-    "org.apache.httpcomponents" % "httpclient-cache" % "4.3.3",
-    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.5.3",
-    "commons-fileupload" % "commons-fileupload" % "1.3")
+    "org.apache.httpcomponents" % "httpclient" % httpCompsV,
+    "org.apache.httpcomponents" % "httpmime" % httpCompsV,
+    "org.apache.httpcomponents" % "httpclient-cache" % httpCompsV,
+    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.4",
+    "commons-fileupload" % "commons-fileupload" % "1.3.3")
 
 version in ThisBuild := s"${version.value}"
 
