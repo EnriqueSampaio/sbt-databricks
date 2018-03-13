@@ -36,6 +36,7 @@ class DatabricksHttpV2(
   ): UploadedLibraryId = {
     val fileName = file.getName
     val dstPath = folder + "/" + fileName
+    outputStream.println(s"Upload jar: ${file.getCanonicalPath} to ${dstPath}")
     shardClient.fs.upload(file.getCanonicalPath, dstPath, overwrite = true)
 
     UploadedLibraryId(dstPath)
@@ -44,7 +45,8 @@ class DatabricksHttpV2(
   override private[sbtdatabricks] def attachToCluster(
     library: UploadedLibrary,
     cluster: Cluster): ClusterId = {
-    shardClient.lib.install(cluster.id, List(Jar(library.id)))
+    outputStream.println(s"Install ${library.remotePath} to ${cluster.id}")
+    shardClient.lib.install(cluster.id, List(Jar(library.remotePath)))
 
     ClusterId(cluster.id)
   }

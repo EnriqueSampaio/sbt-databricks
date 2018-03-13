@@ -491,7 +491,15 @@ object DatabricksPlugin extends AutoPlugin {
 case class ErrorResponse(error: String)
 sealed trait Responses
 case class UploadedLibraryId(id: String)
-case class UploadedLibrary(name: String, jar: File, id: String)
+case class UploadedLibrary(name: String, jar: File, id: String) {
+  def remotePath: String = {
+    if (id.startsWith("dbfs:") || id.startsWith("s3:")) {
+      id
+    } else {
+      "dbfs:" + id
+    }
+  }
+}
 case class Cluster(
     name: String,
     id: String,

@@ -18,30 +18,29 @@ package sbtdatabricks
 
 import java.io.PrintStream
 
-import scala.util.control.NonFatal
+import com.databricks.Shard
 
+import scala.util.control.NonFatal
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
-
-import org.apache.http.{HttpEntity, StatusLine, HttpResponse}
+import org.apache.http.{HttpEntity, HttpResponse, StatusLine}
 import org.apache.http.auth.{AuthScope, UsernamePasswordCredentials}
-import org.apache.http.client.{HttpResponseException, HttpClient}
+import org.apache.http.client.{HttpClient, HttpResponseException}
 import org.apache.http.client.entity.UrlEncodedFormEntity
 import org.apache.http.client.methods._
 import org.apache.http.client.utils.URLEncodedUtils
-import org.apache.http.conn.ssl.{SSLConnectionSocketFactory, TrustSelfSignedStrategy, SSLContextBuilder}
+import org.apache.http.conn.ssl.{SSLConnectionSocketFactory, SSLContextBuilder, TrustSelfSignedStrategy}
 import org.apache.http.entity.StringEntity
 import org.apache.http.entity.mime.MultipartEntity
 import org.apache.http.entity.mime.content.{FileBody, StringBody}
 import org.apache.http.impl.client.{BasicCredentialsProvider, HttpClients}
 import org.apache.http.message.BasicNameValuePair
 import org.apache.http.util.EntityUtils
-
 import sbt._
+
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ArrayBuffer
-
 import sbtdatabricks.DatabricksPlugin.ClusterName
 import sbtdatabricks.DatabricksPlugin.autoImport.DBC_ALL_CLUSTERS
 import sbtdatabricks.util.requests._
@@ -498,7 +497,14 @@ object DatabricksHttp {
       username: String,
       password: String): DatabricksHttp = {
     val cli = DatabricksHttp.getApiClient(username, password)
-    new DatabricksHttp(endpoint, cli)
+    val shardClient = Shard(endpoint)
+      .username(username).password(password)
+      .connect
+    new DatabricksHttpV2(
+      shardClient,
+      endpoint + "/api/1.2",
+      cli
+    )
   }
 
   /** Returns a mock testClient */
