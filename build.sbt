@@ -21,7 +21,7 @@ libraryDependencies ++= Seq(
     "org.apache.httpcomponents" % "httpclient-cache" % httpCompsV,
     "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.4",
     "commons-fileupload" % "commons-fileupload" % "1.3.3",
-    "default" %% "libricks" % "0.4"
+    "default" %% "libricks" % "0.5-SNAPSHOT"
 )
 
 version in ThisBuild := s"${version.value}"
