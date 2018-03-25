@@ -7,7 +7,7 @@ organization := "com.databricks"
 
 name := "sbt-databricks"
 
-version := "0.1.7-SNAPSHOT"
+version := "0.1.6-SNAPSHOT"
 
 scalaVersion := "2.10.7"
 
@@ -21,7 +21,7 @@ libraryDependencies ++= Seq(
     "org.apache.httpcomponents" % "httpclient-cache" % httpCompsV,
     "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.4",
     "commons-fileupload" % "commons-fileupload" % "1.3.3",
-    "default" %% "libricks" % "0.5-SNAPSHOT"
+    "default" %% "libricks" % "0.6"
 )
 
 version in ThisBuild := s"${version.value}"
