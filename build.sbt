@@ -1,5 +1,4 @@
 import bintray.Keys._
-import sbt.Resolver
 
 sbtPlugin := true
 
@@ -11,8 +10,6 @@ version := "0.1.6-SNAPSHOT"
 
 scalaVersion := "2.10.7"
 
-resolvers += Resolver.bintrayRepo("maxgekk", "maven")
-
 val httpCompsV = "4.5.5"
 
 libraryDependencies ++= Seq(
@@ -20,8 +17,7 @@ libraryDependencies ++= Seq(
     "org.apache.httpcomponents" % "httpmime" % httpCompsV,
     "org.apache.httpcomponents" % "httpclient-cache" % httpCompsV,
     "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.4",
-    "commons-fileupload" % "commons-fileupload" % "1.3.3",
-    "default" %% "libricks" % "0.6"
+    "commons-fileupload" % "commons-fileupload" % "1.3.3"
 )
 
 version in ThisBuild := s"${version.value}"

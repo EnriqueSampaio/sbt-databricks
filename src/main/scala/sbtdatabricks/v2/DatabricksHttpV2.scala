@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package sbtdatabricks
+package sbtdatabricks.v2
 
-import java.io.PrintStream
+import java.io.{File, PrintStream}
 
-import com.databricks.{Jar, ShardClient}
 import org.apache.http.client.HttpClient
-import java.io.File
+import sbtdatabricks._
 
 class DatabricksHttpV2(
     shardClient: ShardClient,

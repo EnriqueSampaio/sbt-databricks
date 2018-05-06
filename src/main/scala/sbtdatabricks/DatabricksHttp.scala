@@ -18,9 +18,8 @@ package sbtdatabricks
 
 import java.io.PrintStream
 
-import com.databricks.Shard
-
 import scala.util.control.NonFatal
+
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
@@ -38,12 +37,13 @@ import org.apache.http.impl.client.{BasicCredentialsProvider, HttpClients}
 import org.apache.http.message.BasicNameValuePair
 import org.apache.http.util.EntityUtils
 import sbt._
-
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ArrayBuffer
+
 import sbtdatabricks.DatabricksPlugin.ClusterName
 import sbtdatabricks.DatabricksPlugin.autoImport.DBC_ALL_CLUSTERS
 import sbtdatabricks.util.requests._
+import sbtdatabricks.v2.{DatabricksHttpV2, Shard}
 
 /** Collection of REST calls to Databricks Cloud and related helper functions. Exposed for tests */
 class DatabricksHttp(
