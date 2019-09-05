@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Databricks
+ * Copyright 2018 Databricks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import org.apache.http.entity.StringEntity
 import org.apache.http.entity.mime.MultipartEntity
 import org.apache.http.entity.mime.content.{FileBody, StringBody}
 import org.apache.http.impl.client.{BasicCredentialsProvider, HttpClients}
-import org.apache.http.message.{BasicHeader, BasicNameValuePair}
+import org.apache.http.message.BasicNameValuePair
 import org.apache.http.util.EntityUtils
 import sbt._
 import scala.collection.JavaConversions._
@@ -43,6 +43,7 @@ import scala.collection.mutable.ArrayBuffer
 import sbtdatabricks.DatabricksPlugin.ClusterName
 import sbtdatabricks.DatabricksPlugin.autoImport.DBC_ALL_CLUSTERS
 import sbtdatabricks.util.requests._
+import sbtdatabricks.v2.{DatabricksHttpV2, Shard}
 
 /** Collection of REST calls to Databricks Cloud and related helper functions. Exposed for tests */
 class DatabricksHttp(
@@ -471,36 +472,39 @@ class DatabricksHttp(
 object DatabricksHttp {
 
   /** Create an SSL client to handle communication. */
-  private[sbtdatabricks] def getApiClient(
-      username: String,
-      password: String,
-      version: String): HttpClient = {
+  private[sbtdatabricks] def getApiClient(username: String, password: String): HttpClient = {
 
-    val builder = new SSLContextBuilder()
-    builder.loadTrustMaterial(null, new TrustSelfSignedStrategy())
-    // TLSv1.2 is only available in Java 7 and above
-    builder.useProtocol("TLSv1.2")
-    val sslsf = new SSLConnectionSocketFactory(builder.build())
+      val builder = new SSLContextBuilder()
+      builder.loadTrustMaterial(null, new TrustSelfSignedStrategy())
+      // TLSv1.2 is only available in Java 7 and above
+      builder.useProtocol("TLSv1.2")
+      val sslsf = new SSLConnectionSocketFactory(builder.build())
 
-    val provider = new BasicCredentialsProvider
-    val credentials = new UsernamePasswordCredentials(username, password)
-    provider.setCredentials(AuthScope.ANY, credentials)
+      val provider = new BasicCredentialsProvider
+      val credentials = new UsernamePasswordCredentials(username, password)
+      provider.setCredentials(AuthScope.ANY, credentials)
 
-    val client =
-      HttpClients.custom()
-        .setSSLSocketFactory(sslsf)
-        .setDefaultCredentialsProvider(provider)
-        .setUserAgent(s"sbt-databricks $version")
-        .build()
-    client
+      val client =
+        HttpClients.custom()
+          .setSSLSocketFactory(sslsf)
+          .setDefaultCredentialsProvider(provider)
+          .build()
+      client
   }
 
   private[sbtdatabricks] def apply(
       endpoint: String,
       username: String,
       password: String): DatabricksHttp = {
-    val cli = DatabricksHttp.getApiClient(username, password, build.VERSION_STRING)
-    new DatabricksHttp(endpoint, cli)
+    val cli = DatabricksHttp.getApiClient(username, password)
+    val shardClient = Shard(endpoint)
+      .username(username).password(password)
+      .connect
+    new DatabricksHttpV2(
+      shardClient,
+      endpoint + "/api/1.2",
+      cli
+    )
   }
 
   /** Returns a mock testClient */
