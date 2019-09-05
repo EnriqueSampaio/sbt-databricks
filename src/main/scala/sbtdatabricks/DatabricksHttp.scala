@@ -51,17 +51,18 @@ class DatabricksHttp(
     val client: HttpClient,
     outputStream: PrintStream = System.out) {
 
-  private val endpoint: String = {
-    val endpointPattern = "(.*)/api/([0-9.]+)".r
-    _endpoint match {
-      case endpointPattern(unversionedEndpoint, version) if version.startsWith("2.") =>
-        // We don't support the /api/2.0 endpoint, so automatically rewrite to use /api/1.2
-        unversionedEndpoint + "/api/1.2"
-      case _ =>
-        _endpoint
-    }
-  }
-
+//  private val endpoint: String = {
+//    val endpointPattern = "(.*)/api/([0-9.]+)".r
+//    _endpoint match {
+//      case endpointPattern(unversionedEndpoint, version) if version.startsWith("2.") =>
+//        // We don't support the /api/2.0 endpoint, so automatically rewrite to use /api/1.2
+//        unversionedEndpoint + "/api/1.2"
+//      case _ =>
+//        _endpoint
+//    }
+//  }
+  private val endpoint: String = _endpoint
+  
   import DBApiEndpoints._
 
   private val mapper = new ObjectMapper() with ScalaObjectMapper
